@@ -4,7 +4,9 @@ import 'package:first_app/styled_text.dart';
 
 class GradientContainer extends StatelessWidget{
   //constructor
-  const GradientContainer({super.key});
+  const GradientContainer({super.key, required this.colors});
+
+  final List<Color> colors;
   
   @override
   Widget build(context){
@@ -16,14 +18,14 @@ class GradientContainer extends StatelessWidget{
           ),
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
-            colors: [Colors.red, Colors.yellow],
+            colors: colors,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
 
         child: Center(
-          child: StyledText()
+          child: StyledText("Text parameterized")
         ),
       );
   }
