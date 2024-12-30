@@ -11,12 +11,21 @@ class DiceRoller extends StatefulWidget {
 }
 
 class _DiceRollerState extends State<DiceRoller> {
-  List<String> activeImages = List.generate(5, (index) => 'assets/images/dice-1.png');
+  List<String> activeImages =
+      List.generate(5, (index) => 'assets/images/dice-1.png');
 
   void rollDices() {
     setState(() {
-      activeImages = List.generate(5, 
-        (index) => 'assets/images/dice-${Random().nextInt(6) + 1}.png');
+      activeImages = List.generate(
+          5, (index) => 'assets/images/dice-${Random().nextInt(6) + 1}.png');
+    });
+  }
+
+  void rollDice(int index) {
+    activeImages[index] = 'assets/images/dice-${Random().nextInt(6) + 1}.png';
+
+    setState(() {
+      activeImages;
     });
   }
 
@@ -27,12 +36,19 @@ class _DiceRollerState extends State<DiceRoller> {
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: activeImages
-              .map((image) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(image, width: 100),
-                  ))
-              .toList(),
+          
+          children: activeImages.asMap().entries.map((entry) {
+            int index = entry.key;
+            String image = entry.value;
+
+            return TextButton(
+              onPressed: () => rollDice(index),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(image, width: 100),
+              ),
+            );
+          }).toList(),
         ),
         const SizedBox(height: 20),
         TextButton(
