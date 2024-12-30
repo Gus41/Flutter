@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:first_app/styled_text.dart';
-
+import 'package:first_app/dice_roller.dart';
 
 class GradientContainer extends StatelessWidget{
   //constructor
-  const GradientContainer({super.key, required this.colors});
-
+  GradientContainer({super.key, required this.colors});
   final List<Color> colors;
   
   @override
@@ -25,7 +23,7 @@ class GradientContainer extends StatelessWidget{
         ),
 
         child: Center(
-          child: StyledText("Text parameterized")
+          child: DiceRoller()
         ),
       );
   }
