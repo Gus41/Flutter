@@ -20,15 +20,24 @@ class _QuizState extends State<Quiz>{
   Widget? screen;
   List<String> selectedAnswers = [];
 
+
+  void restart(){
+    setState(() {
+      selectedAnswers = [];
+      screen = StartScreen(switchScreen);
+    });
+  }
+
   void chooseAnswer(String answer){
     selectedAnswers.add(answer);
 
     if(selectedAnswers.length == questions.length){
       setState(() {
-        screen = ResultScreen(chosenAnswers: selectedAnswers,);
+        screen = ResultScreen(chosenAnswers: selectedAnswers, restartQuiz: restart,);
       });
     }    
   }
+
 
   @override
   void initState() {
