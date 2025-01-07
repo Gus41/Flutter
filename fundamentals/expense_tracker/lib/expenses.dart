@@ -1,6 +1,7 @@
 import 'package:expense_tracker/components/expenses_list.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
+import 'package:expense_tracker/components/modal.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -36,6 +37,11 @@ class _Expenses extends State<Expenses> {
         category: Category.leisure),
   ];
 
+  void showModal(){
+    showModalBottomSheet(context: context, builder: (ctx){
+      return Modal();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +49,7 @@ class _Expenses extends State<Expenses> {
       appBar: AppBar(
         title: const Text("Expense Tracker"),
         actions: [
-          IconButton(onPressed: (){}, icon: const Icon(Icons.add))
+          IconButton(onPressed: showModal, icon: const Icon(Icons.add))
         ],
       ),
       body: Column(
