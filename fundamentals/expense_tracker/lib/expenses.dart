@@ -15,22 +15,22 @@ class _Expenses extends State<Expenses> {
 
   final List<Expense> _expenses = [
     Expense(
-        title: 'title',
+        title: 'Expenses Cinema',
         amount: 19.99,
         date: DateTime.now(),
         category: Category.food),
     Expense(
-        title: 'title',
+        title: 'Expenses food',
         amount: 19.99,
         date: DateTime.now(),
         category: Category.food),
     Expense(
-        title: 'title',
+        title: 'Expenses traveling',
         amount: 19.99,
         date: DateTime.now(),
         category: Category.travel),
     Expense(
-        title: 'title',
+        title: 'Expenses goig to cinema',
         amount: 19.99,
         date: DateTime.now(),
         category: Category.leisure),
@@ -39,9 +39,16 @@ class _Expenses extends State<Expenses> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 172, 172, 172),
+      backgroundColor: const Color.fromARGB(255, 228, 227, 227),
+      appBar: AppBar(
+        title: const Text("Expense Tracker"),
+        actions: [
+          IconButton(onPressed: (){}, icon: const Icon(Icons.add))
+        ],
+      ),
       body: Column(
         children: [
+
           Text("Charts"),
           Expanded(child: ExpensesList(expenses: _expenses))
         ],
