@@ -13,7 +13,6 @@ class Expenses extends StatefulWidget {
 }
 
 class _Expenses extends State<Expenses> {
-
   final List<Expense> _expenses = [
     Expense(
         title: 'Expenses Cinema',
@@ -37,11 +36,25 @@ class _Expenses extends State<Expenses> {
         category: Category.leisure),
   ];
 
-  void showModal(){
-    showModalBottomSheet(context: context, builder: (ctx){
-      return Modal();
-    });
+  void showModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return Modal(
+          addExpense: _saveExpense,
+        );
+      },
+      isScrollControlled: true,
+    );
   }
+
+  void _saveExpense(Expense expense) {
+    setState(() {
+      _expenses.add(expense);
+    });
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +67,6 @@ class _Expenses extends State<Expenses> {
       ),
       body: Column(
         children: [
-
           Text("Charts"),
           Expanded(child: ExpensesList(expenses: _expenses))
         ],
