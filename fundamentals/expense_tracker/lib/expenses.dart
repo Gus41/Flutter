@@ -2,6 +2,7 @@ import 'package:expense_tracker/components/expenses_list.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/components/modal.dart';
+import 'package:expense_tracker/components/charts/chart.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -65,11 +66,13 @@ class _Expenses extends State<Expenses> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration: Duration(seconds: 4),
       content: Text("Expense deleted"),
-      action: SnackBarAction(label: "Undo", onPressed: () {
-        setState(() {
-          _expenses.insert(expensIndex, expense);
-        });
-      }),
+      action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              _expenses.insert(expensIndex, expense);
+            });
+          }),
     ));
   }
 
@@ -94,7 +97,7 @@ class _Expenses extends State<Expenses> {
         ],
       ),
       body: Column(
-        children: [Text("Charts"), Expanded(child: content)],
+        children: [Chart(expenses: _expenses), Expanded(child: content)],
       ),
     );
   }
