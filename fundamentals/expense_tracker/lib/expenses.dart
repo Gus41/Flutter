@@ -78,6 +78,10 @@ class _Expenses extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+
+    final width = MediaQuery.of(context).size.width;
+
+
     Widget content = const Center(
       child: Text("No expenses founded"),
     );
@@ -96,8 +100,10 @@ class _Expenses extends State<Expenses> {
           IconButton(onPressed: showModal, icon: const Icon(Icons.add))
         ],
       ),
-      body: Column(
+      body: width < 600? Column(
         children: [Chart(expenses: _expenses), Expanded(child: content)],
+      ) : Row(
+        children: [Expanded(Chart(expenses: _expenses)), Expanded(child: content)],
       ),
     );
   }
