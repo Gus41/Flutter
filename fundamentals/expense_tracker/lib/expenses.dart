@@ -39,6 +39,7 @@ class _Expenses extends State<Expenses> {
 
   void showModal() {
     showModalBottomSheet(
+      useSafeArea: true,
       context: context,
       builder: (ctx) {
         return Modal(
@@ -103,7 +104,7 @@ class _Expenses extends State<Expenses> {
       body: width < 600? Column(
         children: [Chart(expenses: _expenses), Expanded(child: content)],
       ) : Row(
-        children: [Expanded(Chart(expenses: _expenses)), Expanded(child: content)],
+        children: [Expanded(child: Chart(expenses: _expenses)), Expanded(child: content)],
       ),
     );
   }

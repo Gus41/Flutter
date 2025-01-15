@@ -37,105 +37,147 @@ class _Modal extends State<Modal> {
     });
   }
 
-
-
-  void _submitData(){
-    final enteredAmount = double.tryParse(_amountController.text); //return a double or null
+  void _submitData() {
+    final enteredAmount =
+        double.tryParse(_amountController.text); //return a double or null
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
 
-    if(_titleController.text.trim().isEmpty  || amountIsInvalid || _date == null){
-      showDialog(context: context, builder: (ctx){
-        return AlertDialog(
-          title: const Text("Invalid input"),
-          content: const Text("Please make sure a valid title, amount, date and category was entered"),
-          actions: [
-            TextButton(onPressed: (){
-              Navigator.pop(ctx);
-            }, child: const Text("Okay"))
-          ],
-        );
-      });
+    if (_titleController.text.trim().isEmpty ||
+        amountIsInvalid ||
+        _date == null) {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: const Text("Invalid input"),
+              content: const Text(
+                  "Please make sure a valid title, amount, date and category was entered"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text("Okay"))
+              ],
+            );
+          });
       return;
     }
 
-    widget.addExpense(Expense(title: _titleController.text,
-     amount: enteredAmount, date: _date!, category: _category)
-    );
-
+    widget.addExpense(Expense(
+        title: _titleController.text,
+        amount: enteredAmount,
+        date: _date!,
+        category: _category));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16,48,16,16),
-      child: Column(
-        children: [
-          TextField(
-            maxLength: 50,
-            controller: _titleController,
-            decoration: InputDecoration(label: Text("Title")),
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                controller: _amountController,
-                decoration:
-                    InputDecoration(label: Text("Amount"), prefixText: "R\$ "),
-                keyboardType: TextInputType.number,
-              )),
-              const SizedBox(
-                width: 16,
-              ),
-              Expanded(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(_date == null
-                      ? 'No date selected'
-                      : formatter.format(_date!)),
-                  IconButton(
-                      onPressed: _showDatePicker,
-                      icon: const Icon(Icons.calendar_month))
-                ],
-              ))
-            ],
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Row(
-            children: [
-              DropdownButton(
-                value: _category,
-                  items: Category.values
-                      .map((e) => DropdownMenuItem(
-                          value: e, child: Text(e.name.toString())))
-                      .toList(),
-                  onChanged: (value) {
-                    if(value == null){
-                      return;
-                    }
-                    setState(() {
-                      _category = value;
-                    });
+    final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
 
-                  }),
-              const Spacer(),
-              ElevatedButton(
-                  onPressed: _submitData,
-                  child: const Text("Save expense")),
-              const Spacer(),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Cancel")),
-            ],
-          )
-        ],
-      ),
-    );
+    return LayoutBuilder(builder: (ctx, constraints) {
+      final width = constraints.maxWidth;
+
+      return SizedBox(
+        height: double.infinity,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + keyboardSpace),
+            child: Column(
+              children: [
+                if (width >= 600)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          maxLength: 50,
+                          controller: _titleController,
+                          decoration: InputDecoration(label: Text("Title")),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _amountController,
+                          decoration: InputDecoration(
+                              label: Text("Amount"), prefixText: "R\$ "),
+                          keyboardType: TextInputType.number,
+                        ),
+                      )
+                    ],
+                  )
+                else
+                  TextField(
+                    maxLength: 50,
+                    controller: _titleController,
+                    decoration: InputDecoration(label: Text("Title")),
+                  ),
+                Row(
+                  children: [
+                    Expanded(
+                        child: TextField(
+                      controller: _amountController,
+                      decoration: InputDecoration(
+                          label: Text("Amount"), prefixText: "R\$ "),
+                      keyboardType: TextInputType.number,
+                    )),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(_date == null
+                            ? 'No date selected'
+                            : formatter.format(_date!)),
+                        IconButton(
+                            onPressed: _showDatePicker,
+                            icon: const Icon(Icons.calendar_month))
+                      ],
+                    ))
+                  ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    DropdownButton(
+                        value: _category,
+                        items: Category.values
+                            .map((e) => DropdownMenuItem(
+                                value: e, child: Text(e.name.toString())))
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            _category = value;
+                          });
+                        }),
+                    const Spacer(),
+                    ElevatedButton(
+                        onPressed: _submitData,
+                        child: const Text("Save expense")),
+                    const Spacer(),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel")),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    });
   }
 }
