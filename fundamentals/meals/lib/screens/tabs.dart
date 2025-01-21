@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:meals/models/meals.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/meals.dart';
+import 'package:meals/widgets/main_drawer.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -13,6 +15,28 @@ class TabsScreen extends StatefulWidget {
 
 class _TabScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
+  final List<Meal> _favorites = [];
+
+  void showInfoMessage(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _toggleMealFavoriteStatus(Meal meal) {
+    final isExisting = _favorites.contains(meal);
+    if (isExisting) {
+      setState(() {
+        _favorites.remove(meal);
+      });
+      showInfoMessage("Meal is no longer a favorite");
+      return;
+    }
+    setState(() {
+      _favorites.add(meal);
+    });
+    showInfoMessage("Meal marked as a favorite");
+  }
 
   void _selectPage(int index) {
     setState(() {
@@ -22,11 +46,16 @@ class _TabScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget page = const CategoriesScreen();
+    Widget page = CategoriesScreen(
+      onToggleFavorte: _toggleMealFavoriteStatus,
+    );
     var activePageTitle = 'Categories';
 
     if (_selectedPageIndex == 1) {
-      page = const MealsScreen(title: "Favorites", meals: []);
+      page = MealsScreen(
+        meals: _favorites,
+        onToggleFavorte: _toggleMealFavoriteStatus,
+      );
       activePageTitle = 'Your Favorites';
     }
 
@@ -34,6 +63,7 @@ class _TabScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Text(activePageTitle),
       ),
+      drawer: MainDrawer(),
       body: page,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedPageIndex,
@@ -42,7 +72,6 @@ class _TabScreenState extends State<TabsScreen> {
         },
         items: [
           BottomNavigationBarItem(
-
               icon: Icon(Icons.set_meal), label: 'Categories'),
           BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favorites')
         ],
