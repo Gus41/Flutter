@@ -21,7 +21,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 200),
       lowerBound: 0,
       upperBound: 1,
     );
@@ -52,23 +52,28 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     return AnimatedBuilder(
         animation: _animationController,
         child: GridView(
-            padding: EdgeInsets.all(24),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.5,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20),
-            children: [
-              for (final c in availableCategories)
-                CategoryItem(
-                  category: c,
-                  onSelect: () {
-                    _selectCategory(context, c);
-                  },
-                )
-            ],
-          ),
-        builder: (context,child )=> Padding(padding: EdgeInsets.only(top: 100 - _animationController.value * 100), child: child,)
-    );
+          padding: EdgeInsets.all(24),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1.5,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20),
+          children: [
+            for (final c in availableCategories)
+              CategoryItem(
+                category: c,
+                onSelect: () {
+                  _selectCategory(context, c);
+                },
+              )
+          ],
+        ),
+        builder: (context, child) => SlideTransition(
+              position: Tween(
+                begin: Offset(0, 0.2),
+                end: Offset(0, 0),
+              ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut)),
+              child: child,
+            ));
   }
 }

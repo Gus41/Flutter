@@ -51,6 +51,7 @@ class _TabScreenState extends ConsumerState<TabsScreen> {
       page = MealsScreen(
         meals: favoriteMeals,
       );
+      
       activePageTitle = 'Your Favorites';
     }
 
