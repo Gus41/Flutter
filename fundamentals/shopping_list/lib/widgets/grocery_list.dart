@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categories.dart';
 import 'package:shopping_list/models/category.dart';
@@ -16,6 +15,8 @@ class GroceryList extends StatefulWidget {
 
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _grocetyItems = [];
+  var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -28,6 +29,13 @@ class _GroceryListState extends State<GroceryList> {
     final url =
         Uri.https('list-cd3c0-default-rtdb.firebaseio.com', 'list.json');
     final response = await http.get(url);
+
+    if(response.statusCode >= 400){
+      setState(() {
+        _error = "Failed to fetch data";
+      });
+      return;
+    }
 
     final Map<String, dynamic> data = json.decode(response.body);
     final List<GroceryItem> loaddedItemsList = [];
@@ -45,16 +53,22 @@ class _GroceryListState extends State<GroceryList> {
     }
 
     setState(() {
+      _isLoading = false;
       _grocetyItems = loaddedItemsList;
     });
   }
 
   void _addItem() async {
-    await Navigator.of(context)
+    final item = await Navigator.of(context)
         .push<GroceryItem>(MaterialPageRoute(builder: (ctx) {
       return NewItem();
     }));
-    _loadItems();
+
+    if (item != null) {
+      setState(() {
+        _grocetyItems.add(item);
+      });
+    }
   }
 
   removeItem(GroceryItem item) {
@@ -65,6 +79,8 @@ class _GroceryListState extends State<GroceryList> {
 
   @override
   Widget build(BuildContext context) {
+
+
     Widget content = ListView.builder(
         itemCount: _grocetyItems.length,
         itemBuilder: (ctx, index) {
@@ -90,6 +106,13 @@ class _GroceryListState extends State<GroceryList> {
       );
     }
 
+    if(_isLoading){
+      content = Center(child: CircularProgressIndicator(),);
+    }
+
+    if(_error != null){
+      content = Center(child: Text(_error!),);
+    }
     return Scaffold(
         appBar: AppBar(
           title: const Text("Your Groceries"),
