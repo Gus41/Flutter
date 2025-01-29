@@ -28,34 +28,51 @@ class _GroceryListState extends State<GroceryList> {
   void _loadItems() async {
     final url =
         Uri.https('list-cd3c0-default-rtdb.firebaseio.com', 'list.json');
-    final response = await http.get(url);
 
-    if(response.statusCode >= 400){
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode >= 400) {
+        setState(() {
+          _error = "Failed to fetch data";
+        });
+        return;
+      }
+
+      //firebase returns a null strin when the body is empty
+      if (response.body == 'null') {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<GroceryItem> loaddedItemsList = [];
+
+      for (final item in data.entries) {
+        final Category category = categories.entries
+            .firstWhere((e) => e.value.title == item.value['category'])
+            .value;
+
+        loaddedItemsList.add(GroceryItem(
+            id: item.key,
+            name: item.value['name'],
+            quantity: item.value['quantity'],
+            category: category));
+      }
+
       setState(() {
-        _error = "Failed to fetch data";
+        _isLoading = false;
+        _grocetyItems = loaddedItemsList;
+      });
+    } catch (err) {
+      print(err);
+      setState(() {
+        _error = "Failed to fetch data: ${err.toString()}";
       });
       return;
     }
-
-    final Map<String, dynamic> data = json.decode(response.body);
-    final List<GroceryItem> loaddedItemsList = [];
-
-    for (final item in data.entries) {
-      final Category category = categories.entries
-          .firstWhere((e) => e.value.title == item.value['category'])
-          .value;
-
-      loaddedItemsList.add(GroceryItem(
-          id: item.key,
-          name: item.value['name'],
-          quantity: item.value['quantity'],
-          category: category));
-    }
-
-    setState(() {
-      _isLoading = false;
-      _grocetyItems = loaddedItemsList;
-    });
   }
 
   void _addItem() async {
@@ -71,7 +88,16 @@ class _GroceryListState extends State<GroceryList> {
     }
   }
 
-  removeItem(GroceryItem item) {
+  removeItem(GroceryItem item) async {
+    final url = Uri.https(
+        'list-cd3c0-default-rtdb.firebaseio.com', 'list/${item.id}.json');
+
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      return;
+    }
+
     setState(() {
       _grocetyItems.remove(item);
     });
@@ -79,8 +105,6 @@ class _GroceryListState extends State<GroceryList> {
 
   @override
   Widget build(BuildContext context) {
-
-
     Widget content = ListView.builder(
         itemCount: _grocetyItems.length,
         itemBuilder: (ctx, index) {
@@ -106,12 +130,16 @@ class _GroceryListState extends State<GroceryList> {
       );
     }
 
-    if(_isLoading){
-      content = Center(child: CircularProgressIndicator(),);
+    if (_isLoading) {
+      content = Center(
+        child: CircularProgressIndicator(),
+      );
     }
 
-    if(_error != null){
-      content = Center(child: Text(_error!),);
+    if (_error != null) {
+      content = Center(
+        child: Text(_error!),
+      );
     }
     return Scaffold(
         appBar: AppBar(
