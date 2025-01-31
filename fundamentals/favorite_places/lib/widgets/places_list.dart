@@ -21,6 +21,17 @@ class PlacesList extends StatelessWidget {
         itemCount: places.length,
         itemBuilder: (ctx, index) {
           return ListTile(
+            subtitle: Text(
+                '${places[index].location.latitude} - ${places[index].location.longitude}',
+                   style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface)
+                ),
+            leading: CircleAvatar(
+              radius: 26,
+              backgroundImage: FileImage(places[index].image),
+            ),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (ctx) {
                 return PlaceDetailScreen(place: places[index]);
