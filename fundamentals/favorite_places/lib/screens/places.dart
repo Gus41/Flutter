@@ -20,6 +20,7 @@ class _PlacesSceenState extends ConsumerState<Places>{
 
   @override
   void initState() {
+    super.initState();
     _placesFuture = ref.read(userPlacesProvider.notifier).loadData();
   }
 

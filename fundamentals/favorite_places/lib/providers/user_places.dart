@@ -12,7 +12,7 @@ Future<Database> _getDb() async {
   final db = await sql.openDatabase(path.join(databasePath, 'place.db'),
       onCreate: (db, version) {
     return db.execute(
-        'CREATE TABLE places (id TEXT PRIMARY KEY, title TEXT, image TEXT, latitute TEXT, longitude TEXT)');
+        'CREATE TABLE places (id TEXT PRIMARY KEY, title TEXT, image TEXT, latitude TEXT, longitude TEXT)');
   }, version: 1);
 
   return db;
