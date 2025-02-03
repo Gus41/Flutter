@@ -28,7 +28,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (_isLogin) {
       try {
-        final UserCredential = await _firebase.signInWithEmailAndPassword(
+        final userCredentials = await _firebase.signInWithEmailAndPassword(
             email: _enteredEmail, password: _enteresPassword);
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
@@ -45,6 +45,7 @@ class _AuthScreenState extends State<AuthScreen> {
             SnackBar(content: Text(error.message ?? 'Authentication failed')));
       }
     }
+    
   }
 
   @override
