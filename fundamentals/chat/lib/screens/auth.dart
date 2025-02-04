@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -17,6 +18,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   var _enteredEmail = '';
   var _enteresPassword = '';
+  var _username = '';
 
   void _submit() async {
     final isValid = _formKey.currentState!.validate();
@@ -28,8 +30,12 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (_isLogin) {
       try {
-        final userCredentials = await _firebase.signInWithEmailAndPassword(
+        final credentials = await _firebase.signInWithEmailAndPassword(
             email: _enteredEmail, password: _enteresPassword);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(credentials.user!.uid)
+            .set({'username': _username, 'email': _enteredEmail});
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -37,15 +43,18 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     } else {
       try {
-        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+        final credentials = await _firebase.createUserWithEmailAndPassword(
             email: _enteredEmail, password: _enteresPassword);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(credentials.user!.uid)
+            .set({'username': _username, 'email': _enteredEmail});
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(error.message ?? 'Authentication failed')));
       }
     }
-    
   }
 
   @override
@@ -91,6 +100,22 @@ class _AuthScreenState extends State<AuthScreen> {
                               keyboardType: TextInputType.emailAddress,
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                label: Text("Username"),
+                              ),
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value.trim().length < 4) {
+                                  return 'usernamed invalid';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) {
+                                _username = newValue!;
+                              },
                             ),
                             TextFormField(
                               decoration: const InputDecoration(
