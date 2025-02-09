@@ -1,10 +1,31 @@
 import 'package:chat/widgets/message_bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-class ChatMessages extends StatelessWidget {
+class ChatMessages extends StatefulWidget {
   const ChatMessages({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ChatMessagesState();
+  }
+}
+
+class _ChatMessagesState extends State<ChatMessages> {
+  void setUpNotifications() async {
+    final firebase = FirebaseMessaging.instance;
+    final settings = await firebase.requestPermission();
+    final token = await firebase.getToken();
+    
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setUpNotifications();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +68,20 @@ class ChatMessages extends StatelessWidget {
                     : null;
 
                 final currentMessageuser = chatMessaege['userId'];
-                final nextMessageuser = nextChatMessage != null ? nextChatMessage['userId'] : null;
+                final nextMessageuser =
+                    nextChatMessage != null ? nextChatMessage['userId'] : null;
                 final nextUserIsSame = nextMessageuser == currentMessageuser;
 
-                if(nextUserIsSame){
-                  return MessageBubble.next(message: chatMessaege['text'], isMe: user!.uid == currentMessageuser);
-                }else{
-                  return MessageBubble.first(username: chatMessaege['username'], message: chatMessaege['text'], isMe: user!.uid == currentMessageuser);
+                if (nextUserIsSame) {
+                  return MessageBubble.next(
+                      message: chatMessaege['text'],
+                      isMe: user!.uid == currentMessageuser);
+                } else {
+                  return MessageBubble.first(
+                      username: chatMessaege['username'],
+                      message: chatMessaege['text'],
+                      isMe: user!.uid == currentMessageuser);
                 }
-
-
               });
         });
   }
