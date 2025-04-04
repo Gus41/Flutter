@@ -1,5 +1,5 @@
+import 'package:app/screens/genre_form.dart';
 import 'package:app/screens/home.dart';
-import 'package:app/screens/movie_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,8 +17,6 @@ class _RouterState extends ConsumerState<ScreenRouter> {
 
   @override
   Widget build(BuildContext context) {
-    //final user = ref.watch(userProvider);
-
     final List<Widget> pages = [
       const HomeScreen(),
       const Center(
@@ -37,7 +35,7 @@ class _RouterState extends ConsumerState<ScreenRouter> {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (ctx) => MovieForm(),
+                builder: (ctx) => GenreForm(),
               ),
             );
           },

@@ -1,6 +1,6 @@
-import 'package:app/data/all.dart';
 import 'package:app/models/movie.dart';
 import 'package:app/models/genre.dart';
+import 'package:app/providers/genre_provider.dart';
 import 'package:app/providers/movies_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +24,8 @@ class _MovieFormState extends ConsumerState<MovieForm> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.movie?.name ?? '');
-    _directorController = TextEditingController(text: widget.movie?.director ?? '');
+    _directorController =
+        TextEditingController(text: widget.movie?.director ?? '');
     _selectedGenre = widget.movie?.genre;
   }
 
@@ -64,6 +65,9 @@ class _MovieFormState extends ConsumerState<MovieForm> {
 
   @override
   Widget build(BuildContext context) {
+    final genres =
+        ref.watch(genresProvider); 
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.movie == null ? "Adicionar Filme" : "Editar Filme"),

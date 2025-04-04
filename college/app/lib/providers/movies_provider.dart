@@ -1,8 +1,9 @@
+import 'package:app/data/all.dart';
 import 'package:app/models/movie.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MoviesNotifier extends StateNotifier<List<Movie>> {
-  MoviesNotifier() : super([]);
+  MoviesNotifier() : super(movies);
 
   void addMovie(Movie newMovie) {
     state = [...state, newMovie];

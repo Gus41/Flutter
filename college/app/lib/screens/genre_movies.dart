@@ -36,10 +36,27 @@ class GenreScreen extends ConsumerWidget {
                 ),
               );
             },
-            
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => MovieForm(),
+              ),
+            );
+          },
+          backgroundColor: const Color.fromARGB(255, 30, 30, 30),
+          shape: const CircleBorder(),
+          child: const Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 32,
+            ),
+          )),
     );
   }
 }
